@@ -1,0 +1,127 @@
+html {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    background: linear-gradient(to top, #1fa2ff, #12d8fa, #a6ffcb);
+}
+
+h1 {
+    margin: 10vh 0 6vh 0;
+	text-align: center;
+    font-size: 4.6vw;
+	position: relative;
+	font-weight: 900;
+	text-transform: uppercase;
+	line-height: 1;
+	color: transparent;
+
+	&:focus {
+		outline: none;
+    }
+
+    &::before, &::after {
+        content: attr(data-heading);
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    &::before {
+        color: #547cea;
+        clip-path: polygon(0% 100%, 100% 100%, 100% 40%, 0 60%)
+    }
+    &::after {
+        color: #547cea;
+        clip-path: polygon(0 0, 100% 0%, 100% 36%, 0 56%);
+        animation: slide 5s infinite;
+    }
+}
+
+@keyframes slide {
+	0% {
+        transform: translateX(-50%);
+        color: #547cea;
+	}
+	50% {
+        transform: translate(calc(-50% - 20px), 2%);
+        color: #fff;
+	}
+}
+
+.box {
+    box-sizing: border-box;
+    border-radius: .5vw;
+    width: 48vw;
+    margin: 0 auto;
+    padding: 1.5vh 3vw 3vh 3vw;
+    background: #fff;
+}
+
+.container {
+    .box();
+    text-align: right;
+
+    a {
+        font-size: .9vw;
+        color: #bbb;
+        transition: color .2s;
+
+        &:hover {
+            color: #999;
+        }
+    }
+}
+
+.content {
+    font-size: 1.2vw;
+    color: #444;
+
+    p {
+        line-height: 1.7;
+        margin-bottom: 3.2vh;
+        text-align: justify;
+    }
+
+    a {
+        font-size: 1.2vw;
+        color: #547cea;
+
+        &:hover {
+            color: #0d44dd;
+            text-decoration: none;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath fill='none' stroke='%230d44dd' d='M0 3.5c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3'/%3E%3C/svg%3E") repeat-x 0 100%;
+            background-size: 20px auto;
+            animation: waveMove 1s infinite linear;
+        }
+    }
+}
+
+@keyframes waveMove {
+    from {
+        background-position: 0 100%;
+    }
+    to {
+        background-position:-20px 100%;
+    }
+}
+
+.clock {
+    padding-top: 3vh;
+    padding-bottom: .4vh;
+    font-size: .9vw;
+    text-align: right;
+    color: #547cea;
+}
+
+.btn {
+    margin-right: 10px;
+}

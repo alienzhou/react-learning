@@ -61,7 +61,7 @@ class Item extends Alienact.Component {
         console.debug(prevState);
         const needUpdate = Number(prevProps.text) > 60;
         if (!needUpdate) {
-            alert('⚠️ 由于触发了 shouldComponentUpdate，所以不会更新组件');
+            console.warn('⚠️ 由于触发了 shouldComponentUpdate，所以不会更新组件');
         }
         return needUpdate;
     }

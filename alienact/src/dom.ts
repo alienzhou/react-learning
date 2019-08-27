@@ -12,15 +12,15 @@ import {
 } from './utils';
 
 import {reconcile} from './reconciler';
-
 import {inject} from './inject';
 
-let rootInstance: InnerInstance = null;
+const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
 
 export function render(node: Node, parent: HTMLElement) {
+    let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
     let prevInstance = rootInstance;
     let nextInstance = reconcile(parent, prevInstance, node);
-    rootInstance = nextInstance;
+    rootMap.set(parent, nextInstance);
 
     return;
 }

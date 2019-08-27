@@ -22,7 +22,7 @@ class App extends Alienact.Component {
 
     generate() {
         this.setState({
-            total: Math.ceil(Math.random() * 5) + 2
+            total: Math.ceil(Math.random() * 5) + 1
         });
     }
 
@@ -51,3 +51,4 @@ class App extends Alienact.Component {
 }
 
 Alienact.render(<App />, document.getElementById('root'));
+Alienact.render(<div>123</div>, document.getElementById('container'));

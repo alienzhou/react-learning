@@ -18,6 +18,18 @@ const config = {
     },
     module: {
         rules: [{
+            test: /\.css/,
+            use: [
+                {
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: '../',
+                        hmr: true
+                    }
+                },
+                'css-loader'
+            ]
+        }, {
             test: /\.less/,
             use: [
                 {
@@ -57,7 +69,8 @@ const config = {
     resolve: {
         extensions: ['.ts', '.js' ],
         alias: {
-            alienact: path.resolve(__dirname, 'build/alienact.esm.js')
+            'alienact': path.resolve(__dirname, 'build/alienact.esm.js'),
+            '@src': path.resolve(__dirname, 'sample')
         }
     },
     plugins: [
@@ -84,7 +97,8 @@ if (!isProd) {
         overlay: true,
         hot: true,
         inline: true,
-        open: true
+        open: true,
+        historyApiFallback: true
     };
 }
 else {

@@ -2,6 +2,8 @@
     "plugins": [
         ["@babel/plugin-transform-react-jsx", {
             "pragma": "Alienact.createElement"
-        }]
+        }],
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-syntax-dynamic-import"
     ]
 }

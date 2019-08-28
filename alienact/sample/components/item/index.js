@@ -69,10 +69,10 @@ class Item extends Alienact.Component {
     render() {
         const colorful = this.state.colorful;
         return (
-            <li class="item">
+            <li className="item">
                 <button onClick={this.showRefs}>在控制台打印 ref</button>
                 <button ref={this.buttonRef} onClick={this.toggleColorful}>{colorful ? '黑白' : '彩色'}</button>
-                <span class={colorful ? 'colorful' : ''}>{this.props.text}</span>
+                <span className={colorful ? 'colorful' : ''}>{this.props.text}</span>
                 <Count ref={this.countRef} />
             </li>
         );

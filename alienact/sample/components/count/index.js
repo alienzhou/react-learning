@@ -28,7 +28,7 @@ class Count extends Alienact.Component {
 
     render() {
         return (
-            <div class="count-item">
+            <div className="count-item">
                 <div>现在的数量是: {this.state.count}</div>
                 <button onClick={this.handleClick}>加一</button>
             </div>

@@ -15,12 +15,14 @@ function createElement(
         let children: Node[] = [];
         // 标准化 children
         args.forEach(child => {
-            // 将其他基本类型标准化为 text
-            if (
-                typeof child === 'number'
-                || typeof child === 'boolean'
-            ) {
+            // 将数字类型标准化为 text
+            if (typeof child === 'number') {
                 children.push(String(child));
+            }
+
+            // boolean 型渲染为空
+            else if (typeof child === 'boolean') {
+                children.push('');
             }
 
             // 标准化函数节点

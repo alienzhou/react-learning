@@ -23,3 +23,14 @@ export const isFunc = (ele: Node) => (
     && typeof ele.type === 'function'
     && !(ele.type as any).isAlienAct
 );
+
+const IF_PROPS_NEED_MAP: any = {
+    className: 'class'
+};
+
+export const propsMapping = (name: string): string => {
+    if (IF_PROPS_NEED_MAP[name]) {
+        return IF_PROPS_NEED_MAP[name];
+    }
+    return name;
+}

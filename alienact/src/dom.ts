@@ -6,6 +6,7 @@ import {
 } from './types';
 
 import {
+    propsMapping,
     isAttrPropName,
     isListenerPropName,
     convertPropNameToEventName
@@ -49,7 +50,8 @@ function updateNativeProperties(
 
         // 删除不存在的属性
         if (isAttrPropName(propName) && dom instanceof HTMLElement) {
-            dom.removeAttribute(propName);
+            // 一些特殊属性名进行映射
+            dom.removeAttribute(propsMapping(propName));
         }
         else if (isListenerPropName(propName)) {
             const eventName: string = convertPropNameToEventName(propName);
@@ -63,7 +65,8 @@ function updateNativeProperties(
         }
 
         if (isAttrPropName(propName) && dom instanceof HTMLElement) {
-            dom.setAttribute(propName, nextProps[propName]);
+            // 一些特殊属性名进行映射
+            dom.setAttribute(propsMapping(propName), nextProps[propName]);
         }
         else if (isListenerPropName(propName)) {
             const eventName: string = convertPropNameToEventName(propName);

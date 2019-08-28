@@ -94,7 +94,10 @@ function instantiate(node: Node): InnerInstance {
 
         let childrenInstance: InnerInstance[] = null;
         if (props.children) {
-            childrenInstance = props.children.map(instantiate);
+            childrenInstance = props.children
+                //  过滤 null 组件
+                .filter(child => child !== null)
+                .map(instantiate);
             childrenInstance.forEach(instance => elemNode.appendChild(instance.dom));
         }
 
@@ -113,7 +116,7 @@ function reconcileChildren(
     element: AlienElement
 ): InnerInstance[] {
     const elements = element.props.children ? element.props.children : [];
-    const instances = instance.childrenInstance;
+    const instances = instance.childrenInstance || [];
     const len = Math.max(elements.length, instances.length);
     const newChildrenInstance = [];
 

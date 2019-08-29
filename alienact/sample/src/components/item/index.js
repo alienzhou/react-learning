@@ -57,15 +57,6 @@ class Item extends Alienact.Component {
         console.log(this.countRef);
     }
 
-    shouldComponentUpdate(prevProps, prevState) {
-        console.debug(prevState);
-        const needUpdate = Number(prevProps.text) > 60;
-        if (!needUpdate) {
-            console.warn('⚠️ 由于触发了 shouldComponentUpdate，所以不会更新组件');
-        }
-        return needUpdate;
-    }
-
     render() {
         const colorful = this.state.colorful;
         return (

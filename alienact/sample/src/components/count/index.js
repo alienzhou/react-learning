@@ -1,5 +1,6 @@
 // cSpell: ignore Alienact
 import Alienact from 'alienact';
+import ThemeContext from '../themeContext';
 import './index.less';
 
 class Count extends Alienact.Component {
@@ -28,10 +29,14 @@ class Count extends Alienact.Component {
 
     render() {
         return (
-            <div className="count-item">
-                <div>现在的数量是: {this.state.count}</div>
-                <button onClick={this.handleClick}>加一</button>
-            </div>
+            <ThemeContext.Consumer>
+                {value => (
+                    <div className={'count-item ' + value}>
+                        <div>现在的数量是: {this.state.count}</div>
+                        <button onClick={this.handleClick}>加一</button>
+                    </div>
+                )}
+            </ThemeContext.Consumer>
         );
     }
 }

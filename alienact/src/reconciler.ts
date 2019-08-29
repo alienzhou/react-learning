@@ -115,7 +115,14 @@ function reconcileChildren(
     instance: InnerInstance,
     element: AlienElement
 ): InnerInstance[] {
-    const elements = element.props.children ? element.props.children : [];
+    let elements: Node[] = [];
+    if (isFunc(element)) {
+        elements = [(element.type as FunctionComp)(element.props)];
+    }
+    else {
+        elements = element.props.children ? element.props.children : [];
+    }
+    // const elements = element.props.children ? element.props.children : [];
     const instances = instance.childrenInstance || [];
     const len = Math.max(elements.length, instances.length);
     const newChildrenInstance = [];

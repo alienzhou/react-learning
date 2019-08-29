@@ -1,20 +1,29 @@
 // cSpell: ignore Alienact
 import Alienact from 'alienact';
+import {
+    Router,
+    Route,
+    history
+} from 'alienact-router';
 import './index.less';
+import Todo from '@src/pages/todo';
+import Simple from '@src/pages/simple';
+import Home from '@src/pages/home';
 
-function switchByUrl() {
-    if (window.location.pathname === '/todo') {
-        import('@src/pages/todo').then(mod => {
-            const TodoApp = mod.default;
-            Alienact.render(<TodoApp />, document.getElementById('root'));
-        });
-    }
-    else {
-        import('@src/pages/simple').then(mod => {
-            const SimpleApp = mod.default;
-            Alienact.render(<SimpleApp />, document.getElementById('root'));
-        });
+class App extends Alienact.Component {
+    render() {
+        return (
+            <section>
+                <h1 className="top-title">Alienact</h1>
+                <h2 className="top-sub-title">a set of tiny react tech-stack implements</h2>
+                <Router history={history}>
+                    <Route path="/todo" component={Todo} />
+                    <Route path="/simple" component={Simple} />
+                    <Route path="/" component={Home} />
+                </Router>
+            </section>
+        );
     }
 }
 
-switchByUrl();
+Alienact.render(<App />, document.getElementById('root'));

@@ -2,6 +2,7 @@
 import Alienact from 'alienact';
 import Item from '@src/components/item';
 import ThemeContext from '@src/components/themeContext';
+import {Link} from 'alienact-router';
 import './index.less';
 
 class App extends Alienact.Component {
@@ -28,19 +29,11 @@ class App extends Alienact.Component {
         return randoms;
     }
 
-    generate = () => {
-        let total = this.state.total === 3 ? 1 : ++this.state.total;
-        this.setState({total});
-    }
-
-    toggleTheme = () => {
-        const theme = this.state.theme === 'dark' ? 'light' : 'dark';
-        this.setState({theme});
-    }
-
+    generate = () => this.setState({total: this.state.total === 3 ? 1 : ++this.state.total});
+    toggleTheme = () => this.setState({theme: this.state.theme === 'dark' ? 'light' : 'dark'});
     modifyContent = () => this.setState({tail: Math.ceil(Math.random() * 50)});
-
     lock = () => this.setState({locked: !this.state.locked});
+    back = () => this.props.history.goBack();
 
     shouldComponentUpdate(nextProps, nextState) {
         console.debug(nextState);
@@ -64,10 +57,13 @@ class App extends Alienact.Component {
                     <button className="btn" onClick={this.modifyContent}>更新内容</button>
                     <button className="btn" onClick={this.toggleTheme}>切换主题</button>
                     <button className="btn" onClick={this.lock}>锁定</button>
+                    <button className="btn" onClick={this.back}>后退一页</button>
                     <ul className={this.state.locked ? 'list locked' : 'list'}>
                         {randoms.map((text, idx) => <Item index={idx} text={text} />)}
                     </ul>
-                    <a className="effect-link" href="/todo">查看 TODOMVC 示例</a>
+                    <Link className="effect-link" to="/todo">查看 TODOMVC 示例</Link>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <Link className="effect-link" to="/">回到首页</Link> ⬅️
                 </div>
             </ThemeContext.Provider>
         );

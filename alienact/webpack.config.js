@@ -70,6 +70,7 @@ const config = {
         extensions: ['.ts', '.js' ],
         alias: {
             'alienact': path.resolve(__dirname, 'build/alienact-core/alienact-core.esm.js'),
+            'alienact-router': path.resolve(__dirname, 'build/alienact-router/alienact-router.esm.js'),
             '@src': path.resolve(__dirname, 'sample/src')
         }
     },

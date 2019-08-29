@@ -22,7 +22,7 @@ class Component {
     syncStateIfNecessary() {
         // 处理初始化
         if (this.pendingState !== null) {
-            this.state = this.pendingState;
+            this.state = Object.assign({}, this.pendingState);
             this.pendingState = null;
         }
     }
@@ -34,7 +34,7 @@ class Component {
     componentWillUnmount() {}
 
     setState(partialState: State): void {
-        this.prevState = this.state;
+        this.prevState = Object.assign({}, this.state);
         this.pendingState = Object.assign({}, this.state, partialState);
         // this.state = Object.assign({}, this.state, partialState);
         this.update();

@@ -8,7 +8,7 @@ export interface NativeRender {
 
 export interface ComponentCtor {
     isAlienAct: any;
-    new (props: Props): Component;
+    new (props: Props): Component<Props, State>;
 }
 export type FunctionComp = (props: Props) => AlienElement;
 export type HTMLTagName = keyof HTMLElementTagNameMap;
@@ -30,7 +30,7 @@ export type Node = AlienElement | string;
 
 export interface InnerInstance {
     currentElement: Node,
-    publicInstance?: Component,
+    publicInstance?: Component<Props, State>,
     childrenInstance: InnerInstance[],
     dom: DOM
 }

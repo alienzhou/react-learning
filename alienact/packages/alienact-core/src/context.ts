@@ -1,17 +1,23 @@
 import Component from './component';
+import createElement from './element';
 import EventBus from './event.bus';
 import {
+    State,
     Props,
     AlienElement,
     FunctionComp
 } from './types';
 
+interface IProps extends Props {
+    value: any
+};
+
 export default function createContext(defaultVal?: any) {
     const event = new EventBus();
     let contextValue = defaultVal;
 
-    class Provider extends Component {
-        constructor(props: Props) {
+    class Provider extends Component<IProps, State> {
+        constructor(props: IProps) {
             super(props);
 
             if (props.value !== undefined) {
@@ -27,14 +33,14 @@ export default function createContext(defaultVal?: any) {
         }
 
         render() {
-            const child = Array.isArray(this.props.children)
-                ? this.props.children[0]
-                : this.props.children;
-            return child as AlienElement;
+            if (Array.isArray(this.props.children)) {
+                return createElement('div', {}, ...this.props.children);
+            }
+            return this.props.children;
         }
     }
 
-    class Consumer extends Component {
+    class Consumer extends Component<Props, State> {
         state = {value: contextValue};
 
         componentDidMount() {

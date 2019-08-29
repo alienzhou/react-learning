@@ -6,15 +6,15 @@ import {
 } from './types';
 import {reconcile} from './reconciler';
 
-class Component {
+class Component<T, S> {
     static isAlienAct = {};
-    props: Props;
-    state: State;
+    props: T;
+    state: S | {};
     innerInstance: InnerInstance;
-    prevState: Props = null;
-    pendingState: Props = null;
+    prevState: S | {} = null;
+    pendingState: S | {} = null;
 
-    constructor(props: Props) {
+    constructor(props: T) {
         this.props = props;
         this.state = this.state || {};
     }

@@ -1,5 +1,7 @@
 // cSpell: ignore componentWillUnmount
 import {
+    Props,
+    State,
     Node,
     InnerInstance,
     AlienElement,
@@ -16,10 +18,10 @@ import {retrieveRender} from './inject';
 
 const render = retrieveRender();
 
-function createPublicInstance(element: AlienElement): Component {
+function createPublicInstance(element: AlienElement): Component<Props, State> {
     const {type, props} = element;
     const construct = type as any;
-    const instance: Component = new construct(props);
+    const instance: Component<Props, State> = new construct(props);
 
     return instance;
 }
@@ -43,7 +45,7 @@ function instantiate(node: Node): InnerInstance {
 
     // class 类型组件
     else if (isClass(node)) {
-        const publicInstance: Component = createPublicInstance(node);
+        const publicInstance: Component<Props, State> = createPublicInstance(node);
         const childElement: AlienElement = publicInstance.render();
         const childInstance = instantiate(childElement);
 

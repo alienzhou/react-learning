@@ -1,0 +1,16 @@
+{
+  "name": "alienact-core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "rollup.config.js",
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "watch": "rollup -c rollup.config.js -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "rollup": "^1.20.3",
+    "typescript": "^3.6.2"
+  }
+}

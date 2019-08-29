@@ -52,10 +52,6 @@ function instantiate(node: Node): InnerInstance {
             node.props.ref.current = publicInstance;
         }
 
-        if (publicInstance.componentDidMount) {
-            publicInstance.componentDidMount();
-        }
-
         innerInstance = {
             dom: childInstance.dom,
             currentElement: node,
@@ -64,6 +60,13 @@ function instantiate(node: Node): InnerInstance {
         }
 
         publicInstance.innerInstance = innerInstance;
+
+        // 将 componentDidMount 放在设置 innerInstance 后
+        // 保证 componentDidMount 可以正常触发 setState
+        if (publicInstance.componentDidMount) {
+            publicInstance.componentDidMount();
+        }
+
     }
 
 

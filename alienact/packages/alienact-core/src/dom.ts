@@ -65,8 +65,15 @@ function updateNativeProperties(
         }
 
         if (isAttrPropName(propName) && dom instanceof HTMLElement) {
-            // 一些特殊属性名进行映射
-            dom.setAttribute(propsMapping(propName), nextProps[propName]);
+            // 对于 checked 需要特殊处理，为 false 时移除该属性
+            if (propName === 'checked' && !nextProps[propName]) {
+                dom.removeAttribute('checked');
+            }
+            else {
+                // 一些特殊属性名进行映射
+                dom.setAttribute(propsMapping(propName), nextProps[propName]);
+            }
+
         }
         else if (isListenerPropName(propName)) {
             const eventName: string = convertPropNameToEventName(propName);

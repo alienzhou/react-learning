@@ -10,7 +10,7 @@ const PORT = 8085;
 const config = {
     mode: isProd ? 'production' : 'development',
     entry: [
-        path.resolve(__dirname, 'sample/App.js')
+        path.resolve(__dirname, 'sample/src/App.js')
     ],
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -69,14 +69,14 @@ const config = {
     resolve: {
         extensions: ['.ts', '.js' ],
         alias: {
-            'alienact': path.resolve(__dirname, 'build/alienact.esm.js'),
-            '@src': path.resolve(__dirname, 'sample')
+            'alienact': path.resolve(__dirname, 'build/alienact-core/alienact-core.esm.js'),
+            '@src': path.resolve(__dirname, 'sample/src')
         }
     },
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: './public/index.html'
+            template: './sample/public/index.html'
         })
     ]
 };

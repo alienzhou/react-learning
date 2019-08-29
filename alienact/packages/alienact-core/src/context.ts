@@ -6,7 +6,7 @@ import {
     FunctionComp
 } from './types';
 
-export default function createContext(defaultVal: any) {
+export default function createContext(defaultVal?: any) {
     const event = new EventBus();
     let contextValue = defaultVal;
 

@@ -41,7 +41,8 @@ class Component {
     }
 
     render(): AlienElement {
-        throw 'you must implement your own render() function';
+        console.error('you must implement your own render() function');
+        return null;
     }
 
     private update() {

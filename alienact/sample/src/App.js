@@ -18,10 +18,10 @@ class App extends Alienact.Component {
             <section>
                 <h1 className="top-title">Alienact</h1>
                 <h2 className="top-sub-title">a set of tiny react tech-stack implements</h2>
-                <Router history={history}>
-                    <Route path={BASE + '/todo'} component={Todo} />
-                    <Route path={BASE + '/simple'} component={Simple} />
-                    <Route path={BASE + '/'} component={Home} />
+                <Router history={history} base={BASE}>
+                    <Route path="/todo" component={Todo} />
+                    <Route path="/simple" component={Simple} />
+                    <Route path="/" component={Home} />
                 </Router>
             </section>
         );

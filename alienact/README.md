@@ -38,7 +38,7 @@ I hope you can find something useful here.
 
 ## Usage
 
-These libraries maintain the same APIs with the existing technology stack. So you can just use them in which way you write before.
+These libraries maintain the same APIs with the existing technology stack. So you can use them in which way you write before.
 
 For example,
 

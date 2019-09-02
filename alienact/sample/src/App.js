@@ -10,7 +10,7 @@ import Todo from '@src/pages/todo';
 import Simple from '@src/pages/simple';
 import Home from '@src/pages/home';
 
-const BASE = process.env.NODE_ENV === 'production' ? '/react-learning/example' : '';
+const BASE = process.env.NODE_ENV === 'production' ? '/react-learning/alienact' : '';
 
 class App extends Alienact.Component {
     render() {

@@ -90,4 +90,4 @@ export default Count;
 
 It seems the same, right?
 
-Furthermore, you can play with a classic TODOMVC example in the `sample` folder. Have fun!
+Furthermore, you can play with a classic [TODOMVC example](https://alienzhou.github.io/react-learning/alienact/todo) in the `sample` folder. Have fun!

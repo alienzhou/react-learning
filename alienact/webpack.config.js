@@ -1,4 +1,5 @@
 // cSpell: ignore alienact
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -103,6 +104,11 @@ if (!isProd) {
     };
 }
 else {
+    fs.copyFileSync(
+        path.resolve(__dirname, 'README.md'),
+        path.resolve(__dirname, '..', 'docs', 'README.md'),
+        err => console.log(err)
+    );
     config.plugins.push(
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({

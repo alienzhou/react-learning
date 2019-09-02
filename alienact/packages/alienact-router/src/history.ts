@@ -32,6 +32,7 @@ class History implements IHistory {
     length: number = nativeHistory.length;
     action: string = '';
     location: ILocation = getLocationObject();
+    base: string = '';
 
     private _updateLocation(): ILocation {
         const location = getLocationObject();
@@ -51,7 +52,7 @@ class History implements IHistory {
     }
 
     push(path: string, state?: any) {
-        nativeHistory.pushState(state, '', path);
+        nativeHistory.pushState(state, '', this.base + path);
         this.action = 'PUSH';
 
         const location: ILocation = this._updateLocation();
@@ -61,7 +62,7 @@ class History implements IHistory {
     }
 
     replace(path: string, state?: any) {
-        nativeHistory.replaceState(state, '', path);
+        nativeHistory.replaceState(state, '', this.base + path);
         this.action = 'REPLACE';
 
         this._updateLocation();

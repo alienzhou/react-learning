@@ -42,6 +42,8 @@ class Router extends React.Component {
     }
 
     render() {
+        this.props.history.base = this.props.base || '';
+
         return (
             <RouterContext.Provider value={this.props.history}>
                 {this.props.children}

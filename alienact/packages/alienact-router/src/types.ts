@@ -11,6 +11,7 @@ export interface IHistory {
     length: number;
     action: string;
     location: ILocation;
+    base: string;
 
     on: (handler: Handler) => Function;
     push: (path: string, state?: any) => void;

@@ -1,8 +1,10 @@
-# alienact
+# Alienact
 
-## What?
+![what-i-cannot-create-i-do-not-understand](./docs/quote-what-i-cannot-create-i-do-not-understand-richard-feynman-228644.jpg)
 
-This is a set of react-like technology stack libraries. 
+## What
+
+This is a set of react-like technology stack libraries.
 
 React, React-Router, Redux and so on will be reimplemented in a simple way (without considering performance and compatibility). These libraries contain the most common features, such as
 
@@ -23,8 +25,8 @@ React, React-Router, Redux and so on will be reimplemented in a simple way (with
   - [x] Switch Comp
   - [ ] other advance features and Comps
   - [ ] Browser Hash API
-  
-## Why?
+
+## Why
 
 > 'What I cannot create, I do not understand.'   —— Richard Feynman
 
@@ -33,15 +35,15 @@ I don't want to create a new 'react'.
 This repo and the libraries I created are just used to help me understand the hood of React and the relevant things. So never use these in production. Just treat them as a resource for learning.
 
 I hope you can find something useful here.
-  
+
 ## Usage
 
- These libraries maintain the same APIs with the existing technology stack. So you can just use them in which way you write before.
- 
- For example,
- 
- ```JavaScript
- import Alienact from 'alienact';
+These libraries maintain the same APIs with the existing technology stack. So you can just use them in which way you write before.
+
+For example,
+
+```JavaScript
+import Alienact from 'alienact';
 import ThemeContext from '../themeContext';
 import './index.less';
 
@@ -85,7 +87,7 @@ class Count extends Alienact.Component {
 
 export default Count;
 ```
- 
-It seems the same, right? 
+
+It seems the same, right?
 
 Furthermore, you can play with a classic TODOMVC example in the `sample` folder. Have fun!

@@ -13,7 +13,7 @@ const config = {
         path.resolve(__dirname, 'sample/src/App.js')
     ],
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, '..', 'docs', 'alienact'),
         filename: 'bundle.[hash:8].js'
     },
     module: {

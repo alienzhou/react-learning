@@ -10,7 +10,7 @@ class Route extends React.Component {
             <RouterContext.Consumer>
                 {(history: IHistory): any => {
                     const location = history.location;
-                    if (!matchPathPattern(location.pathname, this.props.path)) {
+                    if (!matchPathPattern(location.pathname, history.base + this.props.path)) {
                         return '';
                     }
                     return React.createElement(this.props.component, {history, location});

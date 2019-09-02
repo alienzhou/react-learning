@@ -42,7 +42,7 @@ These libraries maintain the same APIs with the existing technology stack. So yo
 
 For example,
 
-```JavaScript
+```JSX
 import Alienact from 'alienact';
 import ThemeContext from '../themeContext';
 import './index.less';

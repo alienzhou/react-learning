@@ -16,9 +16,13 @@ export const convertPropNameToEventName = (name: string) => (
     isListenerPropName(name) ? name.slice(2).toLowerCase() : ''
 );
 
-export const isText = (ele: AlienElement) => ele.type === TEXT_NODE;
-export const isClass = (ele: AlienElement) => ele.type && (ele.type as any).isAlienAct;
-export const isFunc = (ele: AlienElement) => ele.type && typeof ele.type === 'function' && !(ele.type as any).isAlienAct;
+export const isTextByType = (type: any) => type === TEXT_NODE;
+export const isClassByType = (type: any) => type && type.isAlienAct;
+export const isFuncByType = (type: any) => type && typeof type === 'function' && !type.isAlienAct;
+
+export const isText = (ele: AlienElement) => isTextByType(ele.type);
+export const isClass = (ele: AlienElement) => isClassByType(ele.type);
+export const isFunc = (ele: AlienElement) => isFuncByType(ele.type);
 
 export const standardElement = (ele: string | number | boolean | AlienElement): AlienElement => {
     if (typeof ele === 'string') {

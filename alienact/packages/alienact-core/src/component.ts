@@ -2,10 +2,12 @@ import {
     Fiber,
     Props,
     State,
+    FiberTag,
     AlienElement,
     InnerInstance
 } from './types';
-import {reconcile} from './reconciler';
+// import {reconcile} from './reconciler';
+import {pushToUpdateQueue} from './reconciler.fiber';
 
 class Component<T, S> {
     static isAlienAct = {};
@@ -39,7 +41,7 @@ class Component<T, S> {
         this.prevState = Object.assign({}, this.state);
         this.pendingState = Object.assign({}, this.state, partialState);
         // this.state = Object.assign({}, this.state, partialState);
-        this.update();
+        this.update(partialState);
     }
 
     render(): AlienElement {
@@ -47,10 +49,18 @@ class Component<T, S> {
         return null;
     }
 
-    private update() {
-        const parent = this.innerInstance.dom.parentNode as HTMLElement;
-        const element = this.innerInstance.currentElement;
-        reconcile(parent, this.innerInstance, element);
+    // private update() {
+    //     const parent = this.innerInstance.dom.parentNode as HTMLElement;
+    //     const element = this.innerInstance.currentElement;
+    //     reconcile(parent, this.innerInstance, element);
+    // }
+
+    private update(partialState: State) {
+        pushToUpdateQueue({
+            from: FiberTag.CLASS_COMPONENT,
+            instance: this,
+            partialState
+        });
     }
 }
 

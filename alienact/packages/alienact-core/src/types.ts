@@ -16,7 +16,7 @@ export const TEXT_NODE = 'TEXT_NODE';
 export type ComponentType = HTMLTagName | ComponentCtor | FunctionComp | 'TEXT_NODE';
 
 export interface FiberDOMExtend {
-    __rootContainerFiber: Fiber;
+    __rootContainerFiber?: Fiber;
 }
 export type DOM = (HTMLElement | Text) & FiberDOMExtend;
 
@@ -73,19 +73,19 @@ export type TaskCallback = (cb: TaskCallbackFunction) => void;
 
 export interface Fiber {
     tag: FiberTag;
-    type: ComponentType;
+    type?: ComponentType;
 
-    return: Fiber | null;
-    child: Fiber | null;
-    sibling: Fiber | null;
+    return?: Fiber | null;
+    child?: Fiber | null;
+    sibling?: Fiber | null;
 
-    alternate: Fiber | null;
-    stateNode: DOM;
+    alternate?: Fiber | null;
+    stateNode?: DOM | Component<any, any>;
 
     props: Props;
-    partialState: State;
+    partialState?: State;
 
-    effectTag: FiberEffectTag;
-    effects: Fiber[];
+    effectTag?: FiberEffectTag;
+    effects?: Fiber[];
 }
 /** above is some types for fiber */

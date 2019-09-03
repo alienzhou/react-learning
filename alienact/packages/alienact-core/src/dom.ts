@@ -1,38 +1,55 @@
 import {
     DOM,
     Props,
+    FiberTag,
     AlienElement,
     InnerInstance
 } from './types';
 
 import {
+    isText,
     propsMapping,
     isAttrPropName,
     isListenerPropName,
     convertPropNameToEventName
 } from './utils';
 
-import {reconcile} from './reconciler';
+// import {reconcile} from './reconciler';
+import {pushToUpdateQueue} from './reconciler.fiber';
 import {inject} from './inject';
 
-const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
+// const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
 
-export function render(element: AlienElement, parent: HTMLElement) {
-    let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
-    let prevInstance = rootInstance;
-    let nextInstance = reconcile(parent, prevInstance, element);
-    rootMap.set(parent, nextInstance);
+// export function render(element: AlienElement, parent: HTMLElement) {
+//     let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
+//     let prevInstance = rootInstance;
+//     let nextInstance = reconcile(parent, prevInstance, element);
+//     rootMap.set(parent, nextInstance);
 
-    return;
-}
+//     return;
+// }
 
-function createNativeTextNode(element: AlienElement) {
-    return document.createTextNode(element.props.text);
+export function render(element: AlienElement, parent: HTMLElement): void {
+    pushToUpdateQueue({
+        from: FiberTag.HOST_ROOT,
+        dom: parent,
+        newProps: {
+            children: [element]
+        }
+    });
 }
 
 function createNativeElementNode(element: AlienElement) {
-    return document.createElement(<string>element.type);
+    const dom: DOM = isText(element)
+        ? document.createTextNode(element.props.text)
+        : document.createElement(element.type as string);
+
+    updateNativeProperties(dom, {}, element.props);
+
+    return dom;
 }
+
+const createNativeTextNode = createNativeElementNode;
 
 function filterKeys(props: Props): string[] {
     return Object.keys(props).filter(name => name !== 'ref');
@@ -43,6 +60,12 @@ function updateNativeProperties(
     prevProps: Props = {},
     nextProps: Props = {}
 ): void {
+    // just update text
+    if (dom.nodeType == 3) {
+        dom.textContent = nextProps.text;
+        return;
+    }
+
     filterKeys(prevProps).forEach(propName => {
         if (nextProps.hasOwnProperty(propName)) {
             return;

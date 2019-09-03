@@ -2,15 +2,16 @@
 import {
     Props,
     State,
-    Node,
     InnerInstance,
     AlienElement,
     FunctionComp
 } from './types';
 
 import {
+    isText,
     isFunc,
-    isClass
+    isClass,
+    standardElement
 } from './utils';
 
 import Component from './component';
@@ -26,37 +27,32 @@ function createPublicInstance(element: AlienElement): Component<Props, State> {
     return instance;
 }
 
-function instantiate(node: Node): InnerInstance {
-
+function instantiate(element: AlienElement): InnerInstance {
     let innerInstance: InnerInstance = null;
 
     // 文本节点
-    if (
-        typeof node === 'string'
-        || typeof node === 'number'
-        || typeof node === 'boolean'
-    ) {
+    if (isText(element)) {
         innerInstance = {
-            dom: render.createNativeTextNode(node),
-            currentElement: node,
+            dom: render.createNativeTextNode(element),
+            currentElement: element,
             childrenInstance: null,
         };
     }
 
     // class 类型组件
-    else if (isClass(node)) {
-        const publicInstance: Component<Props, State> = createPublicInstance(node);
-        const childElement: AlienElement = publicInstance.render();
+    else if (isClass(element)) {
+        const publicInstance: Component<Props, State> = createPublicInstance(element);
+        const childElement: AlienElement = standardElement(publicInstance.render());
         const childInstance = instantiate(childElement);
 
         // 支持 ref
-        if (node.props.ref) {
-            node.props.ref.current = publicInstance;
+        if (element.props.ref) {
+            element.props.ref.current = publicInstance;
         }
 
         innerInstance = {
             dom: childInstance.dom,
-            currentElement: node,
+            currentElement: element,
             childrenInstance: [childInstance],
             publicInstance
         }
@@ -73,22 +69,22 @@ function instantiate(node: Node): InnerInstance {
 
 
     // 纯函数组件
-    else if (isFunc(node)) {
-        const {type, props} = node;
-        const childElement: AlienElement = (type as FunctionComp)(props);
+    else if (isFunc(element)) {
+        const {type, props} = element;
+        const childElement: AlienElement = standardElement((type as FunctionComp)(props));
         const childInstance = instantiate(childElement);
 
         innerInstance = {
             dom: childInstance.dom,
-            currentElement: node,
+            currentElement: element,
             childrenInstance: [childInstance]
         };
     }
 
     // 原生组件
     else {
-        const {type, props} = node;
-        const elemNode = render.createNativeElementNode(type);
+        const props = element.props;
+        const elemNode = render.createNativeElementNode(element);
 
         // 支持 ref
         if (props.ref) {
@@ -108,7 +104,7 @@ function instantiate(node: Node): InnerInstance {
 
         innerInstance = {
             dom: elemNode,
-            currentElement: node,
+            currentElement: element,
             childrenInstance
         };
     }
@@ -120,7 +116,7 @@ function reconcileChildren(
     instance: InnerInstance,
     element: AlienElement
 ): InnerInstance[] {
-    let elements: Node[] = [];
+    let elements: AlienElement[] = [];
     if (isFunc(element)) {
         elements = [(element.type as FunctionComp)(element.props)];
     }
@@ -159,7 +155,7 @@ function walk(root: InnerInstance, visitor: Visitor) {
 export function reconcile(
     parent: HTMLElement,
     instance: InnerInstance = null,
-    element: Node = null
+    element: AlienElement = null
 ): InnerInstance {
     let newInstance: InnerInstance = null;
 
@@ -183,15 +179,7 @@ export function reconcile(
     }
 
     // 子树替换（html tag 变了，或者组件的构造函数变了）
-    else if (
-        typeof element === 'string'
-        || typeof instance.currentElement === 'string'
-        || typeof element === 'number'
-        || typeof instance.currentElement === 'number'
-        || typeof element === 'boolean'
-        || typeof instance.currentElement === 'boolean'
-        || instance.currentElement.type !== element.type
-    ) {
+    else if (instance.currentElement.type !== element.type) {
         newInstance = instantiate(element);
 
         if (
@@ -244,7 +232,7 @@ export function reconcile(
             return instance;
         }
 
-        const nextChildrenElement: AlienElement = publicInstance.render();
+        const nextChildrenElement: AlienElement = standardElement(publicInstance.render());
         const prevChildInstance = instance.childrenInstance;
 
         // 目前不支持返回多个元素，因此对于组件元素它的 childrenInstance 肯定是一个元素，即 render 中返回的最外层元素

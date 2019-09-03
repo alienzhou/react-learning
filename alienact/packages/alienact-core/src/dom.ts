@@ -1,7 +1,7 @@
 import {
     DOM,
-    Node,
     Props,
+    AlienElement,
     InnerInstance
 } from './types';
 
@@ -17,21 +17,21 @@ import {inject} from './inject';
 
 const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
 
-export function render(node: Node, parent: HTMLElement) {
+export function render(element: AlienElement, parent: HTMLElement) {
     let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
     let prevInstance = rootInstance;
-    let nextInstance = reconcile(parent, prevInstance, node);
+    let nextInstance = reconcile(parent, prevInstance, element);
     rootMap.set(parent, nextInstance);
 
     return;
 }
 
-function createNativeTextNode(text: string) {
-    return document.createTextNode(text);
+function createNativeTextNode(element: AlienElement) {
+    return document.createTextNode(element.props.text);
 }
 
-function createNativeElementNode(type: string) {
-    return document.createElement(type);
+function createNativeElementNode(element: AlienElement) {
+    return document.createElement(<string>element.type);
 }
 
 function filterKeys(props: Props): string[] {

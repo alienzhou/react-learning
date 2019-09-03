@@ -1,6 +1,5 @@
 import {
     AlienElement,
-    Node,
     TEXT_NODE,
     TaskCallback,
     TaskCallbackFunction
@@ -17,9 +16,9 @@ export const convertPropNameToEventName = (name: string) => (
     isListenerPropName(name) ? name.slice(2).toLowerCase() : ''
 );
 
-export const isText = (ele: Node) => ele.type === TEXT_NODE;
-export const isClass = (ele: Node) => ele.type && (ele.type as any).isAlienAct;
-export const isFunc = (ele: Node) => ele.type && typeof ele.type === 'function' && !(ele.type as any).isAlienAct;
+export const isText = (ele: AlienElement) => ele.type === TEXT_NODE;
+export const isClass = (ele: AlienElement) => ele.type && (ele.type as any).isAlienAct;
+export const isFunc = (ele: AlienElement) => ele.type && typeof ele.type === 'function' && !(ele.type as any).isAlienAct;
 
 export const standardElement = (ele: string | number | boolean | AlienElement): AlienElement => {
     if (typeof ele === 'string') {

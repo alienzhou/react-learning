@@ -22,7 +22,7 @@ export type DOM = (HTMLElement | Text) & FiberDOMExtend;
 
 export type State = any;
 export interface Props extends Object {
-    children?: Node[],
+    children?: AlienElement[],
     [propName: string]: any
 }
 export interface AlienElement {
@@ -30,10 +30,8 @@ export interface AlienElement {
     props: Props
 }
 
-export type Node = AlienElement;
-
 export interface InnerInstance {
-    currentElement: Node,
+    currentElement: AlienElement,
     publicInstance?: Component<Props, State>,
     childrenInstance: InnerInstance[],
     dom: DOM

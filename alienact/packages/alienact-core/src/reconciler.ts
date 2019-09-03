@@ -2,7 +2,6 @@
 import {
     Props,
     State,
-    Node,
     InnerInstance,
     AlienElement,
     FunctionComp
@@ -28,32 +27,32 @@ function createPublicInstance(element: AlienElement): Component<Props, State> {
     return instance;
 }
 
-function instantiate(node: Node): InnerInstance {
+function instantiate(element: AlienElement): InnerInstance {
     let innerInstance: InnerInstance = null;
 
     // 文本节点
-    if (isText(node)) {
+    if (isText(element)) {
         innerInstance = {
-            dom: render.createNativeTextNode(node),
-            currentElement: node,
+            dom: render.createNativeTextNode(element),
+            currentElement: element,
             childrenInstance: null,
         };
     }
 
     // class 类型组件
-    else if (isClass(node)) {
-        const publicInstance: Component<Props, State> = createPublicInstance(node);
+    else if (isClass(element)) {
+        const publicInstance: Component<Props, State> = createPublicInstance(element);
         const childElement: AlienElement = standardElement(publicInstance.render());
         const childInstance = instantiate(childElement);
 
         // 支持 ref
-        if (node.props.ref) {
-            node.props.ref.current = publicInstance;
+        if (element.props.ref) {
+            element.props.ref.current = publicInstance;
         }
 
         innerInstance = {
             dom: childInstance.dom,
-            currentElement: node,
+            currentElement: element,
             childrenInstance: [childInstance],
             publicInstance
         }
@@ -70,22 +69,22 @@ function instantiate(node: Node): InnerInstance {
 
 
     // 纯函数组件
-    else if (isFunc(node)) {
-        const {type, props} = node;
+    else if (isFunc(element)) {
+        const {type, props} = element;
         const childElement: AlienElement = standardElement((type as FunctionComp)(props));
         const childInstance = instantiate(childElement);
 
         innerInstance = {
             dom: childInstance.dom,
-            currentElement: node,
+            currentElement: element,
             childrenInstance: [childInstance]
         };
     }
 
     // 原生组件
     else {
-        const props = node.props;
-        const elemNode = render.createNativeElementNode(node);
+        const props = element.props;
+        const elemNode = render.createNativeElementNode(element);
 
         // 支持 ref
         if (props.ref) {
@@ -105,7 +104,7 @@ function instantiate(node: Node): InnerInstance {
 
         innerInstance = {
             dom: elemNode,
-            currentElement: node,
+            currentElement: element,
             childrenInstance
         };
     }
@@ -117,7 +116,7 @@ function reconcileChildren(
     instance: InnerInstance,
     element: AlienElement
 ): InnerInstance[] {
-    let elements: Node[] = [];
+    let elements: AlienElement[] = [];
     if (isFunc(element)) {
         elements = [(element.type as FunctionComp)(element.props)];
     }
@@ -156,7 +155,7 @@ function walk(root: InnerInstance, visitor: Visitor) {
 export function reconcile(
     parent: HTMLElement,
     instance: InnerInstance = null,
-    element: Node = null
+    element: AlienElement = null
 ): InnerInstance {
     let newInstance: InnerInstance = null;
 

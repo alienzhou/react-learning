@@ -15,6 +15,9 @@ export default class Home extends Alienact.Component {
                     <li>
                         <Link className="effect-link" to="/todo">TODO MVC 示例</Link>
                     </li>
+                    <li>
+                        <Link className="effect-link" to="/test">Test</Link>
+                    </li>
                 </ul>
             </div>
         )

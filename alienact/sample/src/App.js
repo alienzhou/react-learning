@@ -9,6 +9,7 @@ import './index.less';
 import Todo from '@src/pages/todo';
 import Simple from '@src/pages/simple';
 import Home from '@src/pages/home';
+import Test from '@src/pages/test';
 
 const BASE = process.env.NODE_ENV === 'production' ? '/react-learning/alienact' : '';
 
@@ -21,6 +22,7 @@ class App extends Alienact.Component {
                 <Router history={history} base={BASE}>
                     <Route path="/todo" component={Todo} />
                     <Route path="/simple" component={Simple} />
+                    <Route path="/test" component={Test} />
                     <Route path="/" component={Home} />
                 </Router>
             </section>

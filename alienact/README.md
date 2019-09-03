@@ -18,6 +18,12 @@ React, React-Router, Redux and so on will be reimplemented in a simple way (with
   - [x] stack reconciler
   - [x] fiber reconciler
   - [ ] `key` in list
+  - [ ] Synthetic Event
+  - [ ] Hooks
+  - [ ] Portal
+  - [ ] Forwarding Refs
+  - [ ] Error Boundaries
+  - [ ] Fragment
 - alienact-router(React-Router):
   - [x] Router Comp
   - [x] Browser History API

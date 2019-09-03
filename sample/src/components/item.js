@@ -13,6 +13,10 @@ export default class extends React.Component {
         return false;
     }
 
+    componentDidUpdate() {
+        console.log('item update');
+    }
+
     render() {
         console.log('item render');
         return (

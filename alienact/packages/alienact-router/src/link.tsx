@@ -1,13 +1,13 @@
 // cSpell: ignore alienact
 import React from 'alienact';
 import {RouterContext} from './context';
-import {IHistory} from './types';
+import {ContextValue} from './types';
 
 class Link extends React.Component {
     render() {
         return (
             <RouterContext.Consumer>
-                {(history: IHistory): any => {
+                {(value: ContextValue): any => {
                     const {
                         replace,
                         to,
@@ -19,10 +19,10 @@ class Link extends React.Component {
                             onClick={(e: TrackEvent) => {
                                 e.preventDefault();
                                 if (replace) {
-                                    history.replace(replace);
+                                    value.history.replace(replace);
                                 }
                                 else {
-                                    history.push(to);
+                                    value.history.push(to);
                                 }
                             }}
                         />

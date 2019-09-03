@@ -91,7 +91,7 @@ function instantiate(element: AlienElement): InnerInstance {
             props.ref.current = elemNode;
         }
 
-        render.updateNativeProperties(elemNode, {}, props);
+        // render.updateNativeProperties(elemNode, {}, props);
 
         let childrenInstance: InnerInstance[] = null;
         if (props.children) {
@@ -205,6 +205,7 @@ export function reconcile(
         const prevProps = instance.publicInstance.props;
         const publicInstance = instance.publicInstance;
 
+        // TODO: maybe in wrong position, need to fix
         let snapshot = null;
         if (publicInstance.getSnapshotBeforeUpdate) {
             snapshot = publicInstance.getSnapshotBeforeUpdate(

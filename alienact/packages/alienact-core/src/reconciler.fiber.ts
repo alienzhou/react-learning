@@ -51,6 +51,15 @@ const findClosetDomAncestor = (fiber: Fiber): FiberDom => {
 const deleteAllDoms = (root: Fiber, parent: DOM): void => {
     let node: Fiber = root;
     while (true) {
+
+        // lifecycle: componentWillUnmount
+        if (
+            node.tag === FiberTag.CLASS_COMPONENT
+            && (node.stateNode as Component).componentWillUnmount
+        ) {
+            (node.stateNode as Component).componentWillUnmount();
+        }
+
         if (node.tag !== FiberTag.HOST_COMPONENT) {
             node = node.child;
             continue;
@@ -68,6 +77,28 @@ const deleteAllDoms = (root: Fiber, parent: DOM): void => {
 }
 
 const commitWork = (effected: Fiber): void => {
+    const isClassComp = isClassByType(effected.type);
+    const publicInstance = isClassComp
+        ? effected.stateNode as Component
+        : null;
+
+    // lifecycle: getSnapshotBeforeUpdate
+    let snapshot = null;
+    if (
+        publicInstance
+        && publicInstance.getSnapshotBeforeUpdate
+        // no alternate means initial instantiating
+        && effected.alternate
+    ) {
+        snapshot = publicInstance.getSnapshotBeforeUpdate(
+            effected.props,
+            publicInstance.prevState || publicInstance.state
+        );
+        if (snapshot === undefined) {
+            snapshot = null;
+        }
+    }
+
     if (effected.tag === FiberTag.HOST_ROOT) {
         return;
     }
@@ -94,6 +125,20 @@ const commitWork = (effected: Fiber): void => {
         let fiber = findClosetDomAncestor(effected);
         fiber.stateNode.appendChild((effected.stateNode as DOM));
     }
+
+    // lifecycle: componentDidUpdate
+    if (
+        publicInstance
+        && publicInstance.componentDidUpdate
+        // no alternate means initial instantiating
+        && effected.alternate
+    ) {
+        publicInstance.componentDidUpdate(
+            effected.alternate.props,
+            publicInstance.prevState || publicInstance.state,
+            snapshot
+        );
+    }
 }
 
 const commitAllWork = (pending: Fiber): void => {
@@ -111,7 +156,7 @@ const commitAllWork = (pending: Fiber): void => {
 const completeWork = (fiber: Fiber): void => {
     // link the new fiber to publicInstance
     if (fiber.tag === FiberTag.CLASS_COMPONENT) {
-        (fiber.stateNode as Component<any, any>).__fiber = fiber;
+        (fiber.stateNode as Component).__fiber = fiber;
     }
 
     // the current fiber node and its subtree has reconciled
@@ -175,6 +220,7 @@ const reconcileChildrenArray = (
             else {
                 parent.effects.push(formerFiber);
             }
+            newFiber = null;
         }
 
         if (element && !onlyUpdate) {
@@ -252,20 +298,50 @@ const updateHostComponent = (fiber: Fiber): void => {
     if (!fiber.stateNode) {
         fiber.stateNode = render.createNativeElementNode(fiber);
     }
+
+    // support ref
+    if (fiber.props.ref) {
+        fiber.props.ref.current = fiber.stateNode;
+    }
+
     reconcileChildrenArray(fiber, fiber.props.children);
 }
 
 const updateClassComponent = (fiber: Fiber): void => {
-    let publicInstance = fiber.stateNode as Component<any, any>;
+    let isFirstRender = false;
+    let publicInstance = fiber.stateNode as Component;
     if (!publicInstance) {
         const ctor = fiber.type as ComponentCtor;
         publicInstance = new ctor(fiber.props);
         publicInstance.__fiber = fiber;
         fiber.stateNode = publicInstance;
+        isFirstRender = true;
+
+        // support ref
+        if (fiber.props.ref) {
+            fiber.props.ref.current = publicInstance;
+        }
+
+        // lifecycle: componentDidMount
+        if (publicInstance.componentDidMount) {
+            publicInstance.componentDidMount();
+        }
     }
     else if (fiber.props === publicInstance.props && !fiber.partialState) {
         cloneChildrenFiber(fiber);
         return;
+    }
+
+    // default to reconcile
+    let needUpdate = true;
+    const nextProps = fiber.props;
+    const nextState = Object.assign({}, publicInstance.state, fiber.partialState);
+    if (
+        // render with initial instantiating won't be prevented
+        !isFirstRender
+        && publicInstance.shouldComponentUpdate
+    ) {
+        needUpdate = publicInstance.shouldComponentUpdate(nextProps, nextState);
     }
 
     publicInstance.props = fiber.props;
@@ -273,8 +349,10 @@ const updateClassComponent = (fiber: Fiber): void => {
 
     fiber.partialState = null;
 
-    const childElements = publicInstance.render();
-    reconcileChildrenArray(fiber, childElements);
+    if (needUpdate) {
+        const childElements = publicInstance.render();
+        reconcileChildrenArray(fiber, childElements);
+    }
 }
 
 // it will construct current fiber's children

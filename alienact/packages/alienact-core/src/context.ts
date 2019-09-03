@@ -26,7 +26,8 @@ export default function createContext(defaultVal?: any) {
         }
 
         componentDidUpdate(prevProps: Props) {
-            if (this.props.value != prevProps.value) {
+            if (this.props.value !== prevProps.value) {
+                debugger
                 contextValue = this.props.value;
                 event.emit(contextValue);
             }
@@ -41,6 +42,7 @@ export default function createContext(defaultVal?: any) {
     }
 
     class Consumer extends Component<Props, State> {
+        static isContextConsumer = {};
         state = {value: contextValue};
 
         componentDidMount() {
@@ -48,6 +50,7 @@ export default function createContext(defaultVal?: any) {
         }
 
         render() {
+            console.warn(this.state.value);
             const child = Array.isArray(this.props.children)
                 ? this.props.children[0]
                 : this.props.children;

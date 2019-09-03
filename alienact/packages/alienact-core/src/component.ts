@@ -6,10 +6,10 @@ import {
     AlienElement,
     InnerInstance
 } from './types';
-// import {reconcile} from './reconciler';
+import {reconcile} from './reconciler';
 import {pushToUpdateQueue} from './reconciler.fiber';
 
-class Component<T, S> {
+class Component<T = any, S = any> {
     static isAlienAct = {};
     props: T;
     state: S | {};
@@ -56,6 +56,7 @@ class Component<T, S> {
     // }
 
     private update(partialState: State) {
+        console.warn(this);
         pushToUpdateQueue({
             from: FiberTag.CLASS_COMPONENT,
             instance: this,

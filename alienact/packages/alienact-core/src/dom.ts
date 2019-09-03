@@ -14,22 +14,22 @@ import {
     convertPropNameToEventName
 } from './utils';
 
-// import {reconcile} from './reconciler';
+import {reconcile} from './reconciler';
 import {pushToUpdateQueue} from './reconciler.fiber';
 import {inject} from './inject';
 
-// const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
+const rootMap: WeakMap<HTMLElement, InnerInstance> = new WeakMap();
 
-// export function render(element: AlienElement, parent: HTMLElement) {
-//     let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
-//     let prevInstance = rootInstance;
-//     let nextInstance = reconcile(parent, prevInstance, element);
-//     rootMap.set(parent, nextInstance);
+function renderForStackReconciler(element: AlienElement, parent: HTMLElement) {
+    let rootInstance = rootMap.get(parent) ? rootMap.get(parent) : null;
+    let prevInstance = rootInstance;
+    let nextInstance = reconcile(parent, prevInstance, element);
+    rootMap.set(parent, nextInstance);
 
-//     return;
-// }
+    return;
+}
 
-export function render(element: AlienElement, parent: HTMLElement): void {
+function renderForFiberReconciler(element: AlienElement, parent: HTMLElement): void {
     pushToUpdateQueue({
         from: FiberTag.HOST_ROOT,
         dom: parent,
@@ -38,6 +38,8 @@ export function render(element: AlienElement, parent: HTMLElement): void {
         }
     });
 }
+
+export const render = renderForFiberReconciler;
 
 function createNativeElementNode(element: AlienElement) {
     const dom: DOM = isText(element)

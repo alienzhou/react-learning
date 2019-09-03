@@ -5,7 +5,7 @@ import ThemeContext from '@src/components/themeContext';
 import {Link} from 'alienact-router';
 import './index.less';
 
-class App extends Alienact.Component {
+class SimpleApp extends Alienact.Component {
     constructor(props) {
         super(props);
 
@@ -20,6 +20,8 @@ class App extends Alienact.Component {
     componentDidMount() {
         console.log('app did mount');
     }
+
+    displayName = 'SimpleApp';
 
     createRandoms = () => {
         const randoms = [];
@@ -63,11 +65,11 @@ class App extends Alienact.Component {
                     </ul>
                     <Link className="effect-link" to="/todo">查看 TODOMVC 示例</Link>
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <Link className="effect-link" to="/">回到首页</Link> ⬅️
+                    <Link className="effect-link" to="/123">回到首页</Link> ⬅️
                 </div>
             </ThemeContext.Provider>
         );
     }
 }
 
-export default App;
+export default SimpleApp;

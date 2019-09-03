@@ -10,6 +10,10 @@ class Container extends React.Component {
         console.log('container will unmount');
     }
 
+    componentDidUpdate() {
+        console.log('container update');
+    }
+
     // shouldComponentUpdate() {
     //     return false;
     // }

@@ -20,3 +20,8 @@ export interface IHistory {
     goBack: () => void;
     goForward: () => void;
 }
+
+export interface ContextValue {
+    history: IHistory;
+    location: ILocation;
+}

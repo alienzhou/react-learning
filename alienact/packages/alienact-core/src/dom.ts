@@ -26,12 +26,12 @@ export function render(node: Node, parent: HTMLElement) {
     return;
 }
 
-function createNativeTextNode(text: string) {
-    return document.createTextNode(text);
+function createNativeTextNode(node: Node) {
+    return document.createTextNode(node.props.text);
 }
 
-function createNativeElementNode(type: string) {
-    return document.createElement(type);
+function createNativeElementNode(node: Node) {
+    return document.createElement(<string>node.type);
 }
 
 function filterKeys(props: Props): string[] {

@@ -1,9 +1,11 @@
 import {
     Node,
     Props,
+    TEXT_NODE,
     AlienElement,
-    ComponentType
+    ComponentType,
 } from './types';
+import {standardElement} from './utils';
 
 function createElement(
     type: ComponentType,
@@ -16,13 +18,12 @@ function createElement(
         // 标准化 children
         args.forEach(child => {
             // 将数字类型标准化为 text
-            if (typeof child === 'number') {
-                children.push(String(child));
-            }
-
-            // boolean 型渲染为空
-            else if (typeof child === 'boolean') {
-                children.push('');
+            if (
+                typeof child === 'number'
+                || typeof child === 'boolean'
+                || typeof child === 'string'
+            ) {
+                children.push(standardElement(child));
             }
 
             // 标准化函数节点

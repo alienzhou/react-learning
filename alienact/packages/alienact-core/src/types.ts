@@ -12,9 +12,13 @@ export interface ComponentCtor {
 }
 export type FunctionComp = (props: Props) => AlienElement;
 export type HTMLTagName = keyof HTMLElementTagNameMap;
-export type ComponentType = HTMLTagName | ComponentCtor | FunctionComp;
+export const TEXT_NODE = 'TEXT_NODE';
+export type ComponentType = HTMLTagName | ComponentCtor | FunctionComp | 'TEXT_NODE';
 
-export type DOM = HTMLElement | Text;
+export interface FiberDOMExtend {
+    __rootContainerFiber: Fiber;
+}
+export type DOM = (HTMLElement | Text) & FiberDOMExtend;
 
 export type State = any;
 export interface Props extends Object {
@@ -26,7 +30,7 @@ export interface AlienElement {
     props: Props
 }
 
-export type Node = AlienElement | string;
+export type Node = AlienElement;
 
 export interface InnerInstance {
     currentElement: Node,
@@ -38,3 +42,52 @@ export interface InnerInstance {
 export interface Ref {
     current: any
 }
+
+/** below is some types for fiber */
+export enum FiberTag {
+    HOST_COMPONENT = 'host',
+    CLASS_COMPONENT = 'class',
+    FUNCTION_COMPONENT = 'function',
+    HOST_ROOT = 'root',
+}
+
+export enum FiberEffectTag {
+    PLACEMENT = 'placement',
+    DELETION = 'deletion',
+    UPDATE = 'update',
+}
+
+export interface FiberTask {
+    from: FiberTag;
+    dom?: DOM;
+    instance?: Component<any, any>;
+    partialState?: State;
+    newProps?: Props;
+}
+
+export interface IdleDeadline {
+    didTimeout: boolean;
+    timeRemaining: () => DOMHighResTimeStamp;
+}
+
+export type TaskCallbackFunction = (d: IdleDeadline) => void;
+export type TaskCallback = (cb: TaskCallbackFunction) => void;
+
+export interface Fiber {
+    tag: FiberTag;
+    type: ComponentType;
+
+    return: Fiber | null;
+    child: Fiber | null;
+    sibling: Fiber | null;
+
+    alternate: Fiber | null;
+    stateNode: DOM;
+
+    props: Props;
+    partialState: State;
+
+    effectTag: FiberEffectTag;
+    effects: Fiber[];
+}
+/** above is some types for fiber */

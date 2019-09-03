@@ -1,4 +1,5 @@
 import {
+    Fiber,
     Props,
     State,
     AlienElement,
@@ -13,6 +14,7 @@ class Component<T, S> {
     innerInstance: InnerInstance;
     prevState: S | {} = null;
     pendingState: S | {} = null;
+    __fiber: Fiber | null = null;
 
     constructor(props: T) {
         this.props = props;

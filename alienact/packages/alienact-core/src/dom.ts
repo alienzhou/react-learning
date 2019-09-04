@@ -57,6 +57,16 @@ function filterKeys(props: Props): string[] {
     return Object.keys(props).filter(name => name !== 'ref');
 }
 
+function addEventListener(dom: DOM, name: string, handler: any): void {
+    const eventName: string = convertPropNameToEventName(name);
+    (dom as any)['on' + eventName] = handler;
+}
+
+function removeEventListener(dom: DOM, name: string): void {
+    const eventName: string = convertPropNameToEventName(name);
+    (dom as any)['on' + eventName] = null;
+}
+
 function updateNativeProperties(
     dom: DOM,
     prevProps: Props = {},
@@ -79,8 +89,9 @@ function updateNativeProperties(
             dom.removeAttribute(propsMapping(propName));
         }
         else if (isListenerPropName(propName)) {
-            const eventName: string = convertPropNameToEventName(propName);
-            dom.removeEventListener(eventName, prevProps[propName]);
+            removeEventListener(dom, propName);
+            // const eventName: string = convertPropNameToEventName(propName);
+            // dom.removeEventListener(eventName, prevProps[propName]);
         }
     });
 
@@ -98,14 +109,14 @@ function updateNativeProperties(
                 // 一些特殊属性名进行映射
                 dom.setAttribute(propsMapping(propName), nextProps[propName]);
             }
-
         }
         else if (isListenerPropName(propName)) {
-            const eventName: string = convertPropNameToEventName(propName);
-            if (prevProps.hasOwnProperty(propName)) {
-                dom.removeEventListener(eventName, prevProps[propName]);
-            }
-            dom.addEventListener(eventName, nextProps[propName]);
+            addEventListener(dom, propName, nextProps[propName]);
+            // const eventName: string = convertPropNameToEventName(propName);
+            // if (prevProps.hasOwnProperty(propName)) {
+            //     dom.removeEventListener(eventName, prevProps[propName]);
+            // }
+            // dom.addEventListener(eventName, nextProps[propName]);
         }
     });
 }

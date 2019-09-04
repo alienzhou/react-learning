@@ -2,6 +2,11 @@ type Handler = (val: any) => any;
 
 class EventBus {
     private handlers: Handler[] = [];
+    tag: string = '';
+
+    constructor(tag: string = '') {
+        this.tag = tag;
+    }
 
     on(handler: Handler) {
         this.handlers.push(handler);
@@ -18,6 +23,7 @@ class EventBus {
     }
 
     emit(val: any) {
+        console.warn(this.tag, this.handlers.length)
         this.handlers.forEach(handle => handle(val));
     }
 }

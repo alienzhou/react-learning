@@ -13,7 +13,7 @@ interface IProps extends Props {
 };
 
 export default function createContext(defaultVal?: any) {
-    const event = new EventBus();
+    const event = new EventBus(String(+new Date));
     let contextValue = defaultVal;
 
     class Provider extends Component<IProps, State> {
@@ -27,7 +27,7 @@ export default function createContext(defaultVal?: any) {
 
         componentDidUpdate(prevProps: Props) {
             if (this.props.value !== prevProps.value) {
-                debugger
+                console.warn('componentDidUpdate', this);
                 contextValue = this.props.value;
                 event.emit(contextValue);
             }
@@ -42,19 +42,35 @@ export default function createContext(defaultVal?: any) {
     }
 
     class Consumer extends Component<Props, State> {
-        static isContextConsumer = {};
-        state = {value: contextValue};
+        ts: number;
+        constructor(props: Props) {
+            console.warn('consumer');
+            super(props);
+            this.ts = +new Date();
+            this.state = {value: contextValue};
+            this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(value: any): void {
+            console.warn(this.ts, 'here');
+            this.setState({value});
+        }
 
         componentDidMount() {
-            event.on(value => this.setState({value}))
+            console.warn(this.ts ,'componentDidMount');
+            event.on(this.handleChange);
+        }
+
+        componentWillUnmount() {
+            console.warn(this.ts ,'componentWillUnmount');
+            event.off(this.handleChange);
         }
 
         render() {
-            console.warn(this.state.value);
             const child = Array.isArray(this.props.children)
                 ? this.props.children[0]
                 : this.props.children;
-            return ((child as AlienElement).type as FunctionComp)(this.state.value);
+            return ((child as AlienElement).type as FunctionComp)(contextValue);
         }
     }
 

@@ -31,6 +31,30 @@ type FiberDom = Omit<Fiber, 'stateNode'> & {stateNode: DOM};
 // rest something for windup
 const windup = (): void => {
     (pendingCommit.stateNode as DOM).__rootContainerFiber = pendingCommit;
+
+    pendingCommit.effects.forEach(effected => {
+        if (
+            effected.tag === FiberTag.CLASS_COMPONENT
+            && effected.effectTag === FiberEffectTag.UPDATE
+        ) {
+            const publicInstance = effected.stateNode as Component;
+            // lifecycle: componentDidUpdate
+            if (
+                publicInstance
+                && publicInstance.componentDidUpdate
+                // no alternate means initial instantiating
+                && effected.alternate
+                && !isNeedDelete(effected)
+            ) {
+                publicInstance.componentDidUpdate(
+                    effected.alternate.props,
+                    publicInstance.prevState || publicInstance.state,
+                    {}
+                );
+            }
+        }
+    });
+
     nextUnitOfWork = null;
     pendingCommit = null;
 }
@@ -40,7 +64,8 @@ const findClosetDomAncestor = (fiber: Fiber): FiberDom => {
     fiber = fiber.return;
     // only host or root is a dom
     while (
-        fiber.tag !== FiberTag.HOST_COMPONENT
+        fiber
+        && fiber.tag !== FiberTag.HOST_COMPONENT
         && fiber.tag !== FiberTag.HOST_ROOT
     ) {
         fiber = fiber.return;
@@ -48,7 +73,21 @@ const findClosetDomAncestor = (fiber: Fiber): FiberDom => {
     return fiber as FiberDom;
 }
 
-const deleteAllDoms = (root: Fiber, parent: DOM): void => {
+// delete this fiber from the whole tree
+const deleteFiber = (fiber: Fiber): void => {
+    let node = fiber.return;
+    if (node.child === fiber) {
+        node.child = null;
+        return;
+    }
+
+    while (node.child !== fiber) {
+        node = node.child;
+    }
+    node.child = null;
+}
+
+const traverseFiberBeforeUnmount = (root: Fiber): void => {
     let node: Fiber = root;
     while (true) {
 
@@ -59,6 +98,35 @@ const deleteAllDoms = (root: Fiber, parent: DOM): void => {
         ) {
             (node.stateNode as Component).componentWillUnmount();
         }
+
+        if (node.child) {
+            node = node.child;
+            continue;
+        }
+
+        while (node !== root && !node.sibling) {
+            node = node.return;
+        }
+        if (node === root) {
+            return;
+        }
+        node = node.sibling;
+    }
+}
+
+// delete the doms in this fiber's subtree
+const deleteAllDoms = (root: Fiber, parent: DOM): void => {
+    let node: Fiber = root;
+    while (true) {
+
+        // // lifecycle: componentWillUnmount
+        // console.warn(node)
+        // if (
+        //     node.tag === FiberTag.CLASS_COMPONENT
+        //     && (node.stateNode as Component).componentWillUnmount
+        // ) {
+        //     (node.stateNode as Component).componentWillUnmount();
+        // }
 
         if (node.tag !== FiberTag.HOST_COMPONENT) {
             node = node.child;
@@ -76,6 +144,7 @@ const deleteAllDoms = (root: Fiber, parent: DOM): void => {
     }
 }
 
+// commit an effect (update) to browser API
 const commitWork = (effected: Fiber): void => {
     const isClassComp = isClassByType(effected.type);
     const publicInstance = isClassComp
@@ -105,7 +174,44 @@ const commitWork = (effected: Fiber): void => {
 
     if (effected.effectTag === FiberEffectTag.DELETION) {
         let fiber = findClosetDomAncestor(effected);
+        traverseFiberBeforeUnmount(effected);
         deleteAllDoms(effected, fiber.stateNode);
+        // deleteFiber(effected);
+            // let cur = effected;
+            // while (true) {
+
+            //     // lifecycle: componentWillUnmount
+            //     if (
+            //         cur.tag === FiberTag.CLASS_COMPONENT
+            //         && (cur.stateNode as Component).componentWillUnmount
+            //     ) {
+            //         (cur.stateNode as Component).componentWillUnmount();
+            //     }
+
+            //     if (cur.child) {
+            //         cur = cur.child;
+            //         continue;
+            //     }
+
+            //     while (cur !== effected && !cur.sibling) {
+            //         cur = cur.return;
+            //     }
+            //     if (cur === effected) {
+            //         break;
+            //     }
+            //     cur = cur.sibling;
+            // }
+
+            let node = effected.return;
+            if (node.child === effected) {
+                node.child = null;
+            }
+            else {
+                while (node.sibling !== effected) {
+                    node = node.sibling;
+                }
+                node.sibling = null;
+            }
     }
     else if (
         effected.effectTag === FiberEffectTag.UPDATE
@@ -123,24 +229,49 @@ const commitWork = (effected: Fiber): void => {
         && effected.tag === FiberTag.HOST_COMPONENT
     ) {
         let fiber = findClosetDomAncestor(effected);
-        fiber.stateNode.appendChild((effected.stateNode as DOM));
+        if (!findClosetDomAncestor(effected) && fiber.stateNode.childNodes[0]) {
+            fiber.stateNode.replaceChild(
+                (effected.stateNode as DOM),
+                fiber.stateNode.childNodes[0]
+            );
+        }
+        else {
+            fiber.stateNode.appendChild((effected.stateNode as DOM));
+        }
     }
 
-    // lifecycle: componentDidUpdate
-    if (
-        publicInstance
-        && publicInstance.componentDidUpdate
-        // no alternate means initial instantiating
-        && effected.alternate
-    ) {
-        publicInstance.componentDidUpdate(
-            effected.alternate.props,
-            publicInstance.prevState || publicInstance.state,
-            snapshot
-        );
-    }
+    // if (
+    //     effected.tag === FiberTag.CLASS_COMPONENT
+    //     && effected.effectTag === FiberEffectTag.UPDATE
+    // ) {
+    //     // lifecycle: componentDidUpdate
+    //     if (
+    //         publicInstance
+    //         && publicInstance.componentDidUpdate
+    //         // no alternate means initial instantiating
+    //         && effected.alternate
+    //         && !isNeedDelete(effected)
+    //     ) {
+    //         publicInstance.componentDidUpdate(
+    //             effected.alternate.props,
+    //             publicInstance.prevState || publicInstance.state,
+    //             snapshot
+    //         );
+    //     }
+    // }
 }
 
+const isNeedDelete = (fiber: Fiber): boolean => {
+    while (fiber) {
+        if (fiber.effectTag === FiberEffectTag.DELETION) {
+            return true;
+        }
+        fiber = fiber.return;
+    }
+    return false;
+}
+
+// commit all the pending effects
 const commitAllWork = (pending: Fiber): void => {
     // now all effects (updates) are on root fiber node and pendingCommit is the root one
     // the first item is the very left leaf
@@ -165,7 +296,7 @@ const completeWork = (fiber: Fiber): void => {
         // its children's updates
         const childEffects = fiber.effects || [];
         // its own updates
-        const selfEffect = fiber.tag !== null && fiber.tag !== undefined ? [fiber] : [];
+        const selfEffect = fiber.effectTag !== null && fiber.effectTag !== undefined ? [fiber] : [];
         // its parent's updates
         const parentEffects = fiber.return.effects || [];
 

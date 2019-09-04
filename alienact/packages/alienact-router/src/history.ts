@@ -37,6 +37,7 @@ class History implements IHistory {
     private _updateLocation(): ILocation {
         const location = getLocationObject();
         this.location = location;
+        console.warn('emit history');
         emit(location);
         return location;
     }

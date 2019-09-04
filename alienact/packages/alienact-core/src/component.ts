@@ -56,7 +56,6 @@ class Component<T = any, S = any> {
     // }
 
     private update(partialState: State) {
-        console.warn(this);
         pushToUpdateQueue({
             from: FiberTag.CLASS_COMPONENT,
             instance: this,

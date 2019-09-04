@@ -9,6 +9,8 @@ class Route extends React.Component {
         return (
             <RouterContext.Consumer>
                 {(value: ContextValue): any => {
+                    // console.warn(this.props.component);
+                    // console.warn(value);
                     const {history, location} = value;
                     if (!matchPathPattern(location.pathname, history.base + this.props.path)) {
                         return '';
